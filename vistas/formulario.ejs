@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <div id="container">
+        <form id="formulario" action="/" method="POST">
+            <h2>Nombre:<input id="nombre" type="text" name="nombre"></h2>
+            <h2>Ubicación del Dojo:
+                <select id="ubicacion" name="ubicacion">
+                    <option value="Villarrica">Villarrica</option>
+                    <option value="Temuco">Temuco</option>
+                    <option value="Santiago">Santiago</option>
+                    <option value="Valparaiso">Valparaiso</option>
+                    <option value="Punta Arenas">Punta Arenas</option>
+                    <option value="Arica">Arica</option>
+                    <option value="Antofagasta">Antofagasta</option>
+                    <option value="Talca">Talca</option>
+                    <option value="Coquimbo">Coquimbo</option>
+                </select>
+            </h2>
+            <h2>Lenguaje de programación favorito:
+                <select id="lenguaje" name="lenguaje">
+                    <option value="Java">Java</option>
+                    <option value="Python">Python</option>
+                    <option value="Javascript">Javascript</option>
+                    <option value="Mean">Mean</option>
+                    <option value="MySQL">MySQL</option>
+                    <option value="JQuery">JQuery</option>
+                </select>
+            </h2>
+            <h2>Comentario (Opcional)</h2>
+            <h2><input id="comentario" type="textarea" name="comentario"></h2>
+            <h2><input id="botonenviar" type="submit" value="submit"></h2>
+        </form>
+    </div>
+
+    <div id= "nuevoformulario">
+        <p class= "formularioenviado"></p>
+        <p class= "numeroaleatorio"></p>
+    </div>
+    
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script>
+        
+        $(document).ready(function(){
+            const socket = io('http://localhost:8000');     
+            
+            $('#botonenviar').on('click', function(){
+                socket.emit('formulario_publicacion', {
+                    nombre: $('#nombre').val(),
+                    ubicacion: $('#ubicacion').val(),
+                    lenguaje: $("#lenguaje").val(),
+                    comentario: $("#comentario").val()
+                    
+                });
+            });
+            
+            socket.on('mensaje_actualizado', function(data) {
+                $(".formularioenviado").html(data.informacion)        
+            });
+            socket.on('numero_aleatorio', function(data){
+                $(".numeroaleatorio").html(data.mensajenumero)
+                
+            })
+            $('#formulario').on('submit', function(ev){
+            ev.preventDefault()
+            });
+        });
+        
+        </script>
+</body>
+
+</html>
